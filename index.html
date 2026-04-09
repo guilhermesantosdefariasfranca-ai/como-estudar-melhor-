@@ -2,28 +2,32 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Como Estudar Melhor PRO</title>
+<title>Como Estudar Melhor PRO MAX</title>
 <style>
-body{font-family:Arial;background:linear-gradient(135deg,#0f172a,#020617);color:white;margin:0;padding:20px}
+body{font-family:Arial;background:linear-gradient(135deg,#0f172a,#020617);color:white;margin:0;padding:20px;transition:0.3s}
+.light{background:#f1f5f9;color:#111}
 h1{text-align:center}
 .container{max-width:900px;margin:auto}
 .card{background:#1e293b;margin:15px 0;padding:20px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,0.4)}
+.light .card{background:white}
 h2{color:#22c55e}
 button{margin-top:10px;padding:10px 15px;border:none;border-radius:8px;background:#22c55e;color:white;cursor:pointer}
 button:hover{background:#16a34a}
-.hidden{display:none}
 input{padding:8px;border-radius:6px;border:none;margin-top:5px}
 li{margin:5px 0}
+canvas{background:white;border-radius:10px;margin-top:10px}
 </style>
 </head>
 <body>
 <div class="container">
 <h1>📚 Como Estudar Melhor</h1>
 
+<button onclick="toggleModo()">🌙/☀️ Alternar Tema</button>
+
 <div class="card">
-<h2>🎯 Meta de Estudo</h2>
+<h2>🎯 Meta</h2>
 <input id="metaInput" placeholder="Ex: Estudar 2 horas">
-<button onclick="salvarMeta()">Salvar Meta</button>
+<button onclick="salvarMeta()">Salvar</button>
 <p id="meta"></p>
 </div>
 
@@ -36,74 +40,104 @@ li{margin:5px 0}
 </div>
 
 <div class="card">
-<h2>📋 Checklist de Estudos</h2>
+<h2>📋 Checklist</h2>
 <input id="taskInput" placeholder="Adicionar tarefa">
 <button onclick="addTask()">Adicionar</button>
 <ul id="lista"></ul>
 </div>
 
 <div class="card">
-<h2>🎯 Foco</h2>
-<p>Evite distrações como celular e redes sociais durante o estudo.</p>
-</div>
-
-<div class="card">
-<h2>🧠 Técnicas de Estudo</h2>
-<p>Use mapas mentais, resumos e o método Pomodoro.</p>
-</div>
-
-<div class="card">
-<h2>📅 Organização</h2>
-<p>Crie um cronograma semanal de estudos.</p>
+<h2>📊 Produtividade</h2>
+<canvas id="grafico" width="300" height="150"></canvas>
 </div>
 
 </div>
+
+<audio id="som">
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c6c9e3c1c2.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-// META
+// TEMA
+function toggleModo(){
+ document.body.classList.toggle("light");
+}
+
+// META + LOCAL STORAGE
 function salvarMeta(){
-  let valor = document.getElementById("metaInput").value;
-  document.getElementById("meta").innerText = "Meta: " + valor;
+ let val = document.getElementById("metaInput").value;
+ localStorage.setItem("meta", val);
+ document.getElementById("meta").innerText = "Meta: " + val;
+}
+
+window.onload = function(){
+ let meta = localStorage.getItem("meta");
+ if(meta){ document.getElementById("meta").innerText = "Meta: " + meta; }
+ carregarLista();
+ atualizarGrafico();
 }
 
 // POMODORO
 let tempo = 1500;
 let intervalo;
-
 function atualizarTimer(){
-  let min = Math.floor(tempo/60);
-  let sec = tempo%60;
-  document.getElementById("timer").innerText = `${min}:${sec<10?'0':''}${sec}`;
+ let m = Math.floor(tempo/60);
+ let s = tempo%60;
+ document.getElementById("timer").innerText = `${m}:${s<10?'0':''}${s}`;
 }
 
 function startTimer(){
-  if(!intervalo){
-    intervalo = setInterval(()=>{
-      if(tempo>0){ tempo--; atualizarTimer(); }
-    },1000);
-  }
+ if(!intervalo){
+  intervalo = setInterval(()=>{
+    if(tempo>0){ tempo--; atualizarTimer(); }
+    else{
+      document.getElementById("som").play();
+      salvarSessao();
+      resetTimer();
+    }
+  },1000);
+ }
 }
 
-function pauseTimer(){
-  clearInterval(intervalo);
-  intervalo = null;
-}
+function pauseTimer(){ clearInterval(intervalo); intervalo=null; }
+function resetTimer(){ tempo=1500; atualizarTimer(); }
 
-function resetTimer(){
-  tempo = 1500;
-  atualizarTimer();
-}
-
-// CHECKLIST
+// CHECKLIST + STORAGE
 function addTask(){
-  let input = document.getElementById("taskInput");
-  let li = document.createElement("li");
-  let checkbox = document.createElement("input");
-  checkbox.type = "checkbox";
-  li.appendChild(checkbox);
-  li.appendChild(document.createTextNode(" " + input.value));
-  document.getElementById("lista").appendChild(li);
-  input.value = "";
+ let input = document.getElementById("taskInput");
+ let lista = JSON.parse(localStorage.getItem("lista")||"[]");
+ lista.push(input.value);
+ localStorage.setItem("lista", JSON.stringify(lista));
+ input.value="";
+ carregarLista();
+}
+
+function carregarLista(){
+ let lista = JSON.parse(localStorage.getItem("lista")||"[]");
+ let ul = document.getElementById("lista");
+ ul.innerHTML="";
+ lista.forEach(t=>{
+  let li=document.createElement("li");
+  li.innerHTML = `<input type='checkbox'> ${t}`;
+  ul.appendChild(li);
+ });
+}
+
+// PRODUTIVIDADE
+function salvarSessao(){
+ let dados = JSON.parse(localStorage.getItem("grafico")||"[]");
+ dados.push(1);
+ localStorage.setItem("grafico", JSON.stringify(dados));
+ atualizarGrafico();
+}
+
+function atualizarGrafico(){
+ let ctx = document.getElementById("grafico").getContext("2d");
+ let dados = JSON.parse(localStorage.getItem("grafico")||"[]");
+ ctx.clearRect(0,0,300,150);
+ dados.forEach((v,i)=>{
+  ctx.fillRect(i*20,150-(v*30),10,v*30);
+ });
 }
 
 atualizarTimer();
