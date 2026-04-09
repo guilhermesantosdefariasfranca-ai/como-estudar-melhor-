@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Como Estudar Melhor</title>
+<style>
+body{font-family:Arial;background:linear-gradient(135deg,#0f172a,#020617);color:white;margin:0;padding:20px}
+h1{text-align:center}
+.container{max-width:800px;margin:auto}
+.card{background:#1e293b;margin:15px 0;padding:20px;border-radius:12px;box-shadow:0 0 10px rgba(0,0,0,0.3)}
+h2{color:#22c55e}
+button{margin-top:10px;padding:10px 15px;border:none;border-radius:8px;background:#22c55e;color:white;cursor:pointer}
+button:hover{background:#16a34a}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>📚 Como Estudar Melhor</h1>
+
+<div class="card">
+<h2>🎯 Foco</h2>
+<p>Evite distrações como celular e redes sociais durante o estudo.</p>
+<button onclick="toggle('foco')">Ver mais</button>
+<p id="foco" class="hidden">Use técnicas como estudar em um local silencioso e usar fones de ouvido para melhorar a concentração.</p>
+</div>
+
+<div class="card">
+<h2>🧠 Técnicas de Estudo</h2>
+<p>Utilize métodos eficientes para aprender melhor.</p>
+<button onclick="toggle('tecnicas')">Ver mais</button>
+<p id="tecnicas" class="hidden">Experimente mapas mentais, resumos e o método Pomodoro (25 minutos estudando e 5 descansando).</p>
+</div>
+
+<div class="card">
+<h2>📅 Organização</h2>
+<p>Planeje seu tempo de estudo.</p>
+<button onclick="toggle('organizacao')">Ver mais</button>
+<p id="organizacao" class="hidden">Crie um cronograma semanal e defina horários específicos para cada matéria.</p>
+</div>
+
+<div class="card">
+<h2>💤 Descanso</h2>
+<p>Dormir bem é essencial para aprender.</p>
+<button onclick="toggle('descanso')">Ver mais</button>
+<p id="descanso" class="hidden">Evite estudar cansado. O cérebro precisa de descanso para memorizar melhor.</p>
+</div>
+
+</div>
+
+<script>
+function toggle(id){
+  let el = document.getElementById(id);
+  if(el.classList.contains('hidden')){
+    el.classList.remove('hidden');
+  }else{
+    el.classList.add('hidden');
+  }
+}
+</script>
+</body>
+</html>
