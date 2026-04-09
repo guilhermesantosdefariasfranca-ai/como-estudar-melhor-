@@ -2,16 +2,18 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Como Estudar Melhor</title>
+<title>Como Estudar Melhor PRO</title>
 <style>
 body{font-family:Arial;background:linear-gradient(135deg,#0f172a,#020617);color:white;margin:0;padding:20px}
 h1{text-align:center}
-.container{max-width:800px;margin:auto}
-.card{background:#1e293b;margin:15px 0;padding:20px;border-radius:12px;box-shadow:0 0 10px rgba(0,0,0,0.3)}
+.container{max-width:900px;margin:auto}
+.card{background:#1e293b;margin:15px 0;padding:20px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,0.4)}
 h2{color:#22c55e}
 button{margin-top:10px;padding:10px 15px;border:none;border-radius:8px;background:#22c55e;color:white;cursor:pointer}
 button:hover{background:#16a34a}
 .hidden{display:none}
+input{padding:8px;border-radius:6px;border:none;margin-top:5px}
+li{margin:5px 0}
 </style>
 </head>
 <body>
@@ -19,44 +21,92 @@ button:hover{background:#16a34a}
 <h1>📚 Como Estudar Melhor</h1>
 
 <div class="card">
+<h2>🎯 Meta de Estudo</h2>
+<input id="metaInput" placeholder="Ex: Estudar 2 horas">
+<button onclick="salvarMeta()">Salvar Meta</button>
+<p id="meta"></p>
+</div>
+
+<div class="card">
+<h2>⏱️ Pomodoro</h2>
+<p id="timer">25:00</p>
+<button onclick="startTimer()">Iniciar</button>
+<button onclick="pauseTimer()">Pausar</button>
+<button onclick="resetTimer()">Resetar</button>
+</div>
+
+<div class="card">
+<h2>📋 Checklist de Estudos</h2>
+<input id="taskInput" placeholder="Adicionar tarefa">
+<button onclick="addTask()">Adicionar</button>
+<ul id="lista"></ul>
+</div>
+
+<div class="card">
 <h2>🎯 Foco</h2>
 <p>Evite distrações como celular e redes sociais durante o estudo.</p>
-<button onclick="toggle('foco')">Ver mais</button>
-<p id="foco" class="hidden">Use técnicas como estudar em um local silencioso e usar fones de ouvido para melhorar a concentração.</p>
 </div>
 
 <div class="card">
 <h2>🧠 Técnicas de Estudo</h2>
-<p>Utilize métodos eficientes para aprender melhor.</p>
-<button onclick="toggle('tecnicas')">Ver mais</button>
-<p id="tecnicas" class="hidden">Experimente mapas mentais, resumos e o método Pomodoro (25 minutos estudando e 5 descansando).</p>
+<p>Use mapas mentais, resumos e o método Pomodoro.</p>
 </div>
 
 <div class="card">
 <h2>📅 Organização</h2>
-<p>Planeje seu tempo de estudo.</p>
-<button onclick="toggle('organizacao')">Ver mais</button>
-<p id="organizacao" class="hidden">Crie um cronograma semanal e defina horários específicos para cada matéria.</p>
-</div>
-
-<div class="card">
-<h2>💤 Descanso</h2>
-<p>Dormir bem é essencial para aprender.</p>
-<button onclick="toggle('descanso')">Ver mais</button>
-<p id="descanso" class="hidden">Evite estudar cansado. O cérebro precisa de descanso para memorizar melhor.</p>
+<p>Crie um cronograma semanal de estudos.</p>
 </div>
 
 </div>
 
 <script>
-function toggle(id){
-  let el = document.getElementById(id);
-  if(el.classList.contains('hidden')){
-    el.classList.remove('hidden');
-  }else{
-    el.classList.add('hidden');
+// META
+function salvarMeta(){
+  let valor = document.getElementById("metaInput").value;
+  document.getElementById("meta").innerText = "Meta: " + valor;
+}
+
+// POMODORO
+let tempo = 1500;
+let intervalo;
+
+function atualizarTimer(){
+  let min = Math.floor(tempo/60);
+  let sec = tempo%60;
+  document.getElementById("timer").innerText = `${min}:${sec<10?'0':''}${sec}`;
+}
+
+function startTimer(){
+  if(!intervalo){
+    intervalo = setInterval(()=>{
+      if(tempo>0){ tempo--; atualizarTimer(); }
+    },1000);
   }
 }
+
+function pauseTimer(){
+  clearInterval(intervalo);
+  intervalo = null;
+}
+
+function resetTimer(){
+  tempo = 1500;
+  atualizarTimer();
+}
+
+// CHECKLIST
+function addTask(){
+  let input = document.getElementById("taskInput");
+  let li = document.createElement("li");
+  let checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  li.appendChild(checkbox);
+  li.appendChild(document.createTextNode(" " + input.value));
+  document.getElementById("lista").appendChild(li);
+  input.value = "";
+}
+
+atualizarTimer();
 </script>
 </body>
 </html>
