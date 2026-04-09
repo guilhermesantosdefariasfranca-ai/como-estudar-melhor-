@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Como Estudar Melhor PRO MAX</title>
+<title>Como Estudar Melhor PRO</title>
 <style>
 body{font-family:Arial;background:linear-gradient(135deg,#0f172a,#020617);color:white;margin:0;padding:20px;transition:0.3s}
 .light{background:#f1f5f9;color:#111}
@@ -13,6 +13,7 @@ h1{text-align:center}
 h2{color:#22c55e}
 button{margin-top:10px;padding:10px 15px;border:none;border-radius:8px;background:#22c55e;color:white;cursor:pointer}
 button:hover{background:#16a34a}
+.hidden{display:none}
 input{padding:8px;border-radius:6px;border:none;margin-top:5px}
 li{margin:5px 0}
 canvas{background:white;border-radius:10px;margin-top:10px}
@@ -25,9 +26,9 @@ canvas{background:white;border-radius:10px;margin-top:10px}
 <button onclick="toggleModo()">🌙/☀️ Alternar Tema</button>
 
 <div class="card">
-<h2>🎯 Meta</h2>
+<h2>🎯 Meta de Estudo</h2>
 <input id="metaInput" placeholder="Ex: Estudar 2 horas">
-<button onclick="salvarMeta()">Salvar</button>
+<button onclick="salvarMeta()">Salvar Meta</button>
 <p id="meta"></p>
 </div>
 
@@ -40,7 +41,7 @@ canvas{background:white;border-radius:10px;margin-top:10px}
 </div>
 
 <div class="card">
-<h2>📋 Checklist</h2>
+<h2>📋 Checklist de Estudos</h2>
 <input id="taskInput" placeholder="Adicionar tarefa">
 <button onclick="addTask()">Adicionar</button>
 <ul id="lista"></ul>
@@ -51,6 +52,35 @@ canvas{background:white;border-radius:10px;margin-top:10px}
 <canvas id="grafico" width="300" height="150"></canvas>
 </div>
 
+<!-- PARTE EDUCATIVA (VOLTOU) -->
+<div class="card">
+<h2>🎯 Foco</h2>
+<p>Evite distrações como celular e redes sociais.</p>
+<button onclick="toggle('foco')">Ver mais</button>
+<p id="foco" class="hidden">Estude em local silencioso, use fones ou apps de bloqueio de distrações.</p>
+</div>
+
+<div class="card">
+<h2>🧠 Técnicas de Estudo</h2>
+<p>Use métodos eficientes.</p>
+<button onclick="toggle('tecnicas')">Ver mais</button>
+<p id="tecnicas" class="hidden">Pomodoro, mapas mentais, revisão espaçada e resumos ajudam muito.</p>
+</div>
+
+<div class="card">
+<h2>📅 Organização</h2>
+<p>Planeje seu tempo.</p>
+<button onclick="toggle('organizacao')">Ver mais</button>
+<p id="organizacao" class="hidden">Monte cronograma semanal e defina prioridades.</p>
+</div>
+
+<div class="card">
+<h2>💤 Descanso</h2>
+<p>Dormir bem é essencial.</p>
+<button onclick="toggle('descanso')">Ver mais</button>
+<p id="descanso" class="hidden">O cérebro precisa de descanso para consolidar o aprendizado.</p>
+</div>
+
 </div>
 
 <audio id="som">
@@ -58,18 +88,21 @@ canvas{background:white;border-radius:10px;margin-top:10px}
 </audio>
 
 <script>
-// TEMA
-function toggleModo(){
- document.body.classList.toggle("light");
+function toggleModo(){ document.body.classList.toggle("light"); }
+
+function toggle(id){
+ let el = document.getElementById(id);
+ el.classList.toggle('hidden');
 }
 
-// META + LOCAL STORAGE
+// META
 function salvarMeta(){
  let val = document.getElementById("metaInput").value;
  localStorage.setItem("meta", val);
  document.getElementById("meta").innerText = "Meta: " + val;
 }
 
+// LOAD
 window.onload = function(){
  let meta = localStorage.getItem("meta");
  if(meta){ document.getElementById("meta").innerText = "Meta: " + meta; }
@@ -102,7 +135,7 @@ function startTimer(){
 function pauseTimer(){ clearInterval(intervalo); intervalo=null; }
 function resetTimer(){ tempo=1500; atualizarTimer(); }
 
-// CHECKLIST + STORAGE
+// CHECKLIST
 function addTask(){
  let input = document.getElementById("taskInput");
  let lista = JSON.parse(localStorage.getItem("lista")||"[]");
